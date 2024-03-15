@@ -11,14 +11,13 @@ type
 
 type archivo_empleados = file of empleado;
 
+procedure cargarEmpleados();
 var 
     a1:archivo_empleados;
     nombre_fisico: string;
     emp: empleado;
     contador: integer;
-
 begin
-
     contador:=1;
 
     write('Ingrese nombre archivo: ');
@@ -47,6 +46,51 @@ begin
     end;
 
     close(a1);
-    
+end;
+
+procedure buscarEmpleados();
+var
+    nombre_fisico, condicion: string;
+    a1: archivo_empleados; 
+    emp: empleado;
+
+begin
+
+    write('Ingrese el nombre del archivo a abrir: ');
+    readln(nombre_fisico);
+    assign(a1, nombre_fisico);
+    reset(a1); //abrimos el archivo existente
+
+    write('Ingrese el nombre o apellido a buscar: ');
+    readln(condicion);
+    writeln('Coincidencias: ');
+    while(not eof(a1)) do begin
+        read(a1, emp);
+        if(emp.nombre=condicion) or (emp.apellido=condicion) then
+            writeln('nombre: ',emp.nombre,', apellido: ',emp.apellido,', DNI: ',emp.DNI,', edad: ',emp.edad,', numero: ',emp.numero);
+    end;
+
+
+end;
+
+
+var
+    opcion: integer;
+
+begin
+
+    writeln('Ingrese una de las siguiente opciones: ');
+    writeln('1: cargar empleados');
+    writeln('2: buscar empleados');
+    write('-> ');
+    readln(opcion);
+
+    if(opcion=1) then begin
+        cargarEmpleados();
+    end
+    else begin
+        //write('todavia no hecho')
+        buscarEmpleados();
+    end;
 
 end.
