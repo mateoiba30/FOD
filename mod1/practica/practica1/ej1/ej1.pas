@@ -15,9 +15,9 @@ var
 begin
 
     write('Ingrese el nombre que le quiere asignar al archivo: ');
-    readln(nombre_fisico);
-    assign(a1, nombre_fisico);
-    rewrite(a1);
+    readln(nombre_fisico); 
+    assign(a1, nombre_fisico); //relacionamos el nombre lógico con el nombre fisico
+    rewrite(a1); //creamos el archivo
 
     write('Ingrese un numero a incorporar al archivo (con ',FIN,' finaliza): ');
     read(num);
