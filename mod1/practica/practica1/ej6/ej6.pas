@@ -239,6 +239,26 @@ begin
     close(a1);
 end;
 
+procedure exportarSinStock(var a1: archivo_celulares);
+var
+    txt: Text;
+    cel: celular;
+
+begin
+    assign(txt, 'SinStock.txt');
+    rewrite(txt);
+    reset(a1);
+
+    while(not eof(a1)) do begin
+        read(a1, cel);
+        if(cel.stock_dis=0) then
+            writeln(txt, cel.codigo,' ', cel.precio:0:2, ' ',cel.marca, ' ', cel.stock_dis, ' ',cel.stock_min, ' ', cel.descripcion, ' ', cel.nombre);
+    end;
+
+    close(txt);
+    close(a1);
+end;
+
 var
     terminar: boolean;
     opcion: integer;
@@ -260,6 +280,7 @@ begin
         writeln('5: aniadir celulares');
         writeln('6: mostrar todos los celulares');
         writeln('7: modificar stock de un celular');
+        writeln('8: exportar los que no tengan stock');
 
         write('-> ');
         readln(opcion);
@@ -281,6 +302,7 @@ begin
             5: aniadirCelulares(a1);
             6: mostrarCelulares(a1);
             7: modificarStock(a1);
+            8: exportarSinStock(a1);
 
         end;
     end;
