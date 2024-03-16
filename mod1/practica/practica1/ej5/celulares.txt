@@ -1,0 +1,6 @@
+123 120000 motorola
+12 10 es_un_celu_muy bueno
+nombre largo
+321 21313321 samsung
+10 12 caro
+lindo_celu
