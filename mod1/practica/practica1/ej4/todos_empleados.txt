@@ -1,0 +1,2 @@
+nombre, apellido, DNI, edad, numeromateo,ibanez,45277135,77,1
+sonia,gutkin,20890567,50,2

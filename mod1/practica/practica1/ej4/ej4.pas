@@ -1,5 +1,8 @@
 program ej3;
 
+uses
+  SysUtils; //para el IntToStr
+
 const
     FIN = 'fin';
 
@@ -10,7 +13,6 @@ type
     end;
 
     archivo_empleados = file of empleado;
-
 
 //asumo que me pasan abierto el archivo y este modulo no lo debe cerrar
 procedure empleadoRegistrado(var encontre: boolean; numero: integer; var a1: archivo_empleados; pos: integer);
@@ -27,18 +29,15 @@ begin
     seek(a1, pos); //volvemos a la posicion original
 end;
 
-procedure cargarEmpleados();
+procedure cargarEmpleados(var a1: archivo_empleados);
 var 
-    a1:archivo_empleados;
-    nombre_fisico: string;
     emp: empleado;
     contador: integer;
+    repetido: boolean;
+
 begin
     contador:=1;
 
-    write('Ingrese nombre archivo: ');
-    readln(nombre_fisico);
-    assign(a1,nombre_fisico);
     rewrite(a1);
 
     write('Ingrese apellido del empleado 1 (ingrese ',FIN,' para terminar): ');
@@ -54,7 +53,14 @@ begin
         write('Ingrese numero del empleado: ');
         readln(emp.numero);
 
-        write(a1,emp);
+        empleadoRegistrado(repetido, emp.numero, a1, filePos(a1));
+        if(repetido = false) then begin
+            write(a1,emp);
+        end
+        else begin
+            writeln('numero de empleado repetido!');
+        end;
+
         contador:=contador+1;
         writeln('');
         write('Ingrese apellido del empleado ',contador,': ');
@@ -64,21 +70,18 @@ begin
     close(a1);
 end;
 
-procedure buscarEmpleados();
+procedure buscarEmpleados(var a1: archivo_empleados);
 var
-    nombre_fisico, condicion: string;
-    a1: archivo_empleados; 
+    condicion: string;
     emp: empleado;
 
 begin
 
-    write('Ingrese el nombre del archivo a abrir: ');
-    readln(nombre_fisico);
-    assign(a1, nombre_fisico);
     reset(a1); //abrimos el archivo existente
 
     write('Ingrese el nombre o apellido a buscar: ');
     readln(condicion);
+    writeln('');
     writeln('Coincidencias: ');
     while(not eof(a1)) do begin
         read(a1, emp);
@@ -103,21 +106,17 @@ begin
             writeln('nombre: ',emp.nombre,', apellido: ',emp.apellido,', DNI: ',emp.DNI,', edad: ',emp.edad,', numero: ',emp.numero);
     end;
     close(a1);
+    writeln('');
 end;
 
-procedure agregarEmpleados();
+procedure agregarEmpleados(var a1: archivo_empleados);
 var 
-    a1:archivo_empleados;
-    nombre_fisico: string;
     emp: empleado;
     contador: integer;
     repetido: boolean;
 begin
     contador:=1;
 
-    write('Ingrese nombre archivo: ');
-    readln(nombre_fisico);
-    assign(a1,nombre_fisico);
     reset(a1); //abrimos el archivo existente
     seek(a1, fileSize(a1));//nos paramos al final para agregar informacion
 
@@ -151,14 +150,64 @@ begin
     close(a1);
 end;
 
+procedure modificarEdad(var a1: archivo_empleados);
+var
+    numero: integer;
+    emp: empleado;
+
+begin
+    write('Ingrese el numero de empleado a modificar: ');
+    readln(numero);
+    reset(a1); //abrimos el archivo existente
+
+    while(not eof(a1)) do begin
+        read(a1, emp);
+        if(emp.numero=numero) then begin
+            write('Ingrese la nueva edad: ');
+            readln(emp.edad);
+            seek(a1, filePos(a1)-1); //en el read de arriba hemos pasado de empleado, pero ahora debemos volver
+            write(a1, emp);
+        end;
+    end;
+
+    close(a1);
+end;
+
+procedure exportarArchivo(var a1: archivo_empleados);
+var
+    txt: Text;
+    emp: empleado;
+
+begin
+    assign(txt, 'todos_empleados.txt');
+    rewrite(txt);
+    reset(a1);
+
+    writeln(txt, 'nombre, apellido, DNI, edad, numero');
+    while(not eof(a1)) do begin
+        read(a1, emp);
+        writeln(txt, emp.nombre,',',emp.apellido,',',emp.DNI,',',IntToStr(emp.edad),',',IntToStr(emp.numero));
+    end;
+
+    close(a1);
+    close(txt);
+end;
+
 var
     opcion: integer;
     terminar: boolean;
+    nombre_fisico: string;
+    a1: archivo_empleados;
 
 begin
     terminar:=false;
 
     while(terminar=false) do begin
+
+        write('Ingrese el nombre del ARCHIVO a manipular: ');
+        readln(nombre_fisico);
+        assign(a1,nombre_fisico);
+
         writeln('Ingrese una de las siguiente opciones: ');
         writeln('1: cargar empleados');
         writeln('2: buscar empleados');
@@ -172,10 +221,11 @@ begin
         readln(opcion);
 
         case opcion of
-            1: cargarEmpleados();
-            2: buscarEmpleados();
-            3: agregarEmpleados();
-            //4: modificarEmpleado();
+            1: cargarEmpleados(a1);
+            2: buscarEmpleados(a1);
+            3: agregarEmpleados(a1);
+            4: modificarEdad(a1);
+            5: exportarArchivo(a1);
             7: terminar:=true;
         end;
     end;
