@@ -29,13 +29,18 @@ begin
     seek(a1, pos); //volvemos a la posicion original
 end;
 
-procedure cargarEmpleados(var a1: archivo_empleados);
+procedure cargarEmpleados();
 var 
     emp: empleado;
     contador: integer;
     repetido: boolean;
-
+    nombre_fisico: string;
+    a1: archivo_empleados;
+    
 begin
+    write('Ingrese el nombre del ARCHIVO a manipular: ');
+    readln(nombre_fisico);
+    assign(a1,nombre_fisico);
     contador:=1;
 
     rewrite(a1);
@@ -70,13 +75,17 @@ begin
     close(a1);
 end;
 
-procedure buscarEmpleados(var a1: archivo_empleados);
+procedure buscarEmpleados();
 var
     condicion: string;
     emp: empleado;
+    nombre_fisico: string;
+    a1: archivo_empleados;
 
 begin
-
+    write('Ingrese el nombre del ARCHIVO a manipular: ');
+    readln(nombre_fisico);
+    assign(a1,nombre_fisico);
     reset(a1); //abrimos el archivo existente
 
     write('Ingrese el nombre o apellido a buscar: ');
@@ -109,12 +118,19 @@ begin
     writeln('');
 end;
 
-procedure agregarEmpleados(var a1: archivo_empleados);
+procedure agregarEmpleados();
 var 
     emp: empleado;
     contador: integer;
     repetido: boolean;
+    nombre_fisico: string;
+    a1: archivo_empleados;
+
 begin
+    write('Ingrese el nombre del ARCHIVO a manipular: ');
+    readln(nombre_fisico);
+    assign(a1,nombre_fisico);
+
     contador:=1;
 
     reset(a1); //abrimos el archivo existente
@@ -150,12 +166,18 @@ begin
     close(a1);
 end;
 
-procedure modificarEdad(var a1: archivo_empleados);
+procedure modificarEdad();
 var
     numero: integer;
     emp: empleado;
+    nombre_fisico: string;
+    a1: archivo_empleados;
 
 begin
+    write('Ingrese el nombre del ARCHIVO a manipular: ');
+    readln(nombre_fisico);
+    assign(a1,nombre_fisico);
+
     write('Ingrese el numero de empleado a modificar: ');
     readln(numero);
     reset(a1); //abrimos el archivo existente
@@ -173,12 +195,18 @@ begin
     close(a1);
 end;
 
-procedure exportarArchivo(var a1: archivo_empleados);
+procedure exportarArchivo();
 var
     txt: Text;
     emp: empleado;
+    nombre_fisico: string;
+    a1: archivo_empleados;
 
 begin
+    write('Ingrese el nombre del ARCHIVO a manipular: ');
+    readln(nombre_fisico);
+    assign(a1,nombre_fisico);
+
     assign(txt, 'todos_empleados.txt');
     rewrite(txt);
     reset(a1);
@@ -193,20 +221,41 @@ begin
     close(txt);
 end;
 
+procedure exportarInvalidos();
+var
+    txt: Text;
+    emp: empleado;
+    nombre_fisico: string;
+    a1: archivo_empleados;
+
+begin
+    write('Ingrese el nombre del ARCHIVO a manipular: ');
+    readln(nombre_fisico);
+    assign(a1,nombre_fisico);
+
+    assign(txt, 'faltaDNIEMpleado.txt');
+    rewrite(txt);
+    reset(a1);
+
+    writeln(txt, 'nombre, apellido, DNI, edad, numero');
+    while(not eof(a1)) do begin
+        read(a1, emp);
+        if(emp.DNI='00') then
+            writeln(txt, emp.nombre,',',emp.apellido,',00,',IntToStr(emp.edad),',',IntToStr(emp.numero));
+    end;
+
+    close(txt);
+    close(a1);
+end;
+
 var
     opcion: integer;
     terminar: boolean;
-    nombre_fisico: string;
-    a1: archivo_empleados;
 
 begin
     terminar:=false;
 
     while(terminar=false) do begin
-
-        write('Ingrese el nombre del ARCHIVO a manipular: ');
-        readln(nombre_fisico);
-        assign(a1,nombre_fisico);
 
         writeln('Ingrese una de las siguiente opciones: ');
         writeln('1: cargar empleados');
@@ -221,11 +270,12 @@ begin
         readln(opcion);
 
         case opcion of
-            1: cargarEmpleados(a1);
-            2: buscarEmpleados(a1);
-            3: agregarEmpleados(a1);
-            4: modificarEdad(a1);
-            5: exportarArchivo(a1);
+            1: cargarEmpleados();
+            2: buscarEmpleados();
+            3: agregarEmpleados();
+            4: modificarEdad();
+            5: exportarArchivo();
+            6: exportarInvalidos();
             7: terminar:=true;
         end;
     end;
