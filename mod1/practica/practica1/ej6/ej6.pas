@@ -1,5 +1,7 @@
 program ej5;
 
+const
+    FIN=-99;
 type
     {EL CODIGO ES UN STRING NO ANDA PORQUE QUIERE TOMAR A TODA LA LÍNEA HASTA EL SALTO DE LÍNEA COMO UN SOLO STRING}
     celular=record
@@ -145,6 +147,98 @@ begin
     close(txt2);
 end;
 
+function celularRegistrado(nombre: string; var a1: archivo_celulares; pos: integer): boolean;
+var
+    encontre: boolean;
+    cel:celular;
+
+begin
+    seek(a1, 0); //buscamos desde el inicio
+    encontre:=false;
+    while(not eof(a1)) and (encontre=false) do begin
+        read(a1, cel);
+        if( cel.nombre = nombre ) then
+            encontre := true;
+    end;
+    seek(a1, pos); //volvemos a la posicion original
+    celularRegistrado:=encontre;
+end;
+
+procedure aniadirCelulares(var a1: archivo_celulares);
+var
+    cel:celular;
+    contador:integer;
+
+begin
+    contador:=1;
+    reset(a1); //abrimos el archivo existente
+    seek(a1, fileSize(a1));//nos paramos al final para agregar informacion
+
+    write('Ingrese codigo del celular 1 (ingrese ',FIN,' para terminar): ');
+    readln(cel.codigo);
+   
+    while (cel.codigo<>FIN) do begin
+        write('Ingrese el precio: ');
+        readln(cel.precio);
+        write('Ingrese la marca: ');
+        readln(cel.marca);
+        write('Ingrese el stock disponible: ');
+        readln(cel.stock_dis);
+        write('Ingrese el stock minimo: ');
+        readln(cel.stock_min);
+        write('Ingrese la descripcion: ');
+        readln(cel.descripcion);
+        write('Ingrese el nombre: ');
+        readln(cel.nombre);
+
+        if(not celularRegistrado(cel.nombre, a1, filePos(a1))) then begin
+            write(a1,cel);
+        end
+        else begin
+            writeln('celular repetido!');
+        end;
+
+        contador:=contador+1;
+        writeln('');
+        write('Ingrese codigo del celular ',contador,': ');
+        readln(cel.codigo);
+    end;
+
+    close(a1);
+end;
+
+procedure modificarStock(var a1: archivo_celulares);
+var
+    nombre:string;
+    cel: celular;
+    encontre:boolean;
+    stock:integer;
+
+begin
+    encontre:=false;
+    reset(a1); //abro el archivo al inicio
+
+    write('Ingrese el nombre del celular a modificar: ');
+    readln(nombre);
+    write('Ingrese el nuevo stock disponible del mismo: ');
+    readln(stock);
+
+    while(not eof(a1)) and (not encontre) do begin
+        read(a1, cel);
+        if(cel.nombre=nombre) then begin
+            encontre:=true;
+            cel.stock_dis:=stock;
+            seek(a1, filePos(a1)-1); //retrocedemos para modificar el celular
+            write(a1, cel);//modificamos el archivo
+        end
+    end;
+
+    if(not encontre) then
+        writeln('Celular no encontrado =(');
+    
+    close(a1);
+end;
+
 var
     terminar: boolean;
     opcion: integer;
@@ -163,7 +257,9 @@ begin
         writeln('2: listar poco stock');
         writeln('3: buscar por descripcion');
         writeln('4: exportar archivo a un txt');
-        writeln('5: mostrar todos los celulares');
+        writeln('5: aniadir celulares');
+        writeln('6: mostrar todos los celulares');
+        writeln('7: modificar stock de un celular');
 
         write('-> ');
         readln(opcion);
@@ -182,7 +278,10 @@ begin
             2: celularesPocoStock(a1);
             3: buscarDescripcion(a1);
             4: exportar(a1, txt2);
-            5: mostrarCelulares(a1);
+            5: aniadirCelulares(a1);
+            6: mostrarCelulares(a1);
+            7: modificarStock(a1);
+
         end;
     end;
 end.
