@@ -70,6 +70,23 @@ begin
             writeln('nombre: ',emp.nombre,', apellido: ',emp.apellido,', DNI: ',emp.DNI,', edad: ',emp.edad,', numero: ',emp.numero);
     end;
 
+    writeln('');
+    writeln('Listado de todos los empleados: ');
+    seek(a1, 0);
+    while(not eof(a1)) do begin
+        read(a1, emp);
+        writeln('nombre: ',emp.nombre,', apellido: ',emp.apellido,', DNI: ',emp.DNI,', edad: ',emp.edad,', numero: ',emp.numero);
+    end;
+
+    writeln('');
+    writeln('Listado de los empleados mayores de 70 anios: ');
+    seek(a1, 0);
+    while(not eof(a1)) do begin
+        read(a1, emp);
+        if(emp.edad>70) then
+            writeln('nombre: ',emp.nombre,', apellido: ',emp.apellido,', DNI: ',emp.DNI,', edad: ',emp.edad,', numero: ',emp.numero);
+    end;
+
 
 end;
 
@@ -89,7 +106,6 @@ begin
         cargarEmpleados();
     end
     else begin
-        //write('todavia no hecho')
         buscarEmpleados();
     end;
 

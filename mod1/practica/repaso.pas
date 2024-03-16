@@ -13,6 +13,7 @@ type
     end;
 
 //antes del var debemos construir las funciones:
+//lo que no tiene var no se modifica
 procedure ImprimirLista (l:lista); //estoy haciendo una copia (por valor, no por referencia) del puntero porque no paso 'var l' para que no se guarden los cambios que le hago al puntero
 begin
   while (l<>nil)do begin
