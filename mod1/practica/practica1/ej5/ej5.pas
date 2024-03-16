@@ -128,12 +128,29 @@ begin
     close(a1);
 end;
 
+procedure exportar(var a1: archivo_celulares; var txt2: Text);
+var
+    cel: celular;
+
+begin
+    reset(a1); //abrimos el binario
+    rewrite(txt2); //creamos el txt
+    while(not eof(a1)) do begin
+        read(a1, cel);
+        writeln(txt2, cel.codigo,' ', cel.precio:0:2, cel.marca); //antesd e cada string se guarda un espacio, pero eso no pasa con los numeros
+        writeln(txt2, cel.stock_dis, ' ',cel.stock_min, cel.descripcion);
+        writeln(txt2, cel.nombre);
+    end;
+    close(a1);
+    close(txt2);
+end;
+
 var
     terminar: boolean;
     opcion: integer;
     nombre_fisico: string;
     a1: archivo_celulares;
-    txt: Text;
+    txt, txt2: Text;
 
 begin
     terminar:=false;
@@ -141,30 +158,29 @@ begin
     while(terminar=false) do begin
 
         writeln('Ingrese una de las siguiente opciones: ');
+        writeln('0: FINALIZAR');
         writeln('1: cargar celulares');
         writeln('2: listar poco stock');
         writeln('3: buscar por descripcion');
-        writeln('4: exportar archivo');
-        writeln('5: mostrar todos los celulares');
-        writeln('6: FINALIZAR');
+        writeln('4: exportar archivo a un txt');
 
         write('-> ');
         readln(opcion);
 
-        if(opcion<>6) then begin
+        if(opcion<>0) then begin
             write('Ingrese el nombre del ARCHIVO binario: ');
             readln(nombre_fisico);
             assign(a1,nombre_fisico);
             assign(txt, 'celulares.txt');
+            assign(txt2, 'celulares2.txt');
         end;
 
         case opcion of
+            0: terminar:=true;
             1: cargarCelulares(a1, txt);
             2: celularesPocoStock(a1);
             3: buscarDescripcion(a1);
-            //4: modificarEdad();
-            5: mostrarCelulares(a1);
-            6: terminar:=true;
+            4: exportar(a1, txt2);
         end;
     end;
 end.
