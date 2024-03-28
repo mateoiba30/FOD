@@ -1,0 +1,8 @@
+123 codigo1
+mateo
+1000 codigo1
+mateo
+321 codigo2
+santino
+4000 codigo5
+pepe
