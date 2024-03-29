@@ -125,23 +125,6 @@ begin
 	close (arc_maestro);
 end;
 
-procedure pasarATxt (var arc_maestro:maestro; var arcTxt:Text);
-var
-a:alumno;
-begin
-	reset (arc_maestro);
-	rewrite (arcTxt);
-	while not eof (arc_maestro) do begin
-		read (arc_maestro,a);
-		if (a.cursadas - a.final > 4) then
-		with a do begin
-			writeln (arcTxt,codigo,'  ',apellido,'  ',nombre,'  ',cursadas,'  ',final);
-		end;
-	end;
-	close (arc_maestro);
-	close (arcTxt);
-end;
-
 procedure actualizarMaestro (var arc_maestro: maestro; var arc_detalle: detalle);
 var
     m:materia;
@@ -176,6 +159,24 @@ begin
     close(arc_detalle);
 end;
 
+procedure generarTexto(var arc_maestro: maestro; var arcTxt: Text);
+var
+	al: alumno;
+
+begin
+	reset(arc_maestro);
+	rewrite(arcTxt);
+
+	while not eof(arc_maestro) do begin
+		read(arc_maestro, al);
+		if (al.cursadas < al.final) then
+			writeln(arcTxt, al.codigo, ' ', al.apellido, ' ', al.nombre, ' ', al.cursadas, ' ', al.final); //poner writeln en lugar de write para que cada registro quede en una línea diferente
+	end;
+
+	close(arcTxt);
+	close(arc_maestro);
+end;
+
 var
     arc_maestro:maestro;
     arc_detalle:detalle;
@@ -196,4 +197,6 @@ begin
     writeln ('Nuevo maestro:');
     actualizarMaestro(arc_maestro, arc_detalle);
     mostrarMaestro(arc_maestro);
+	writeln('Se genero txt con los alumnos que tienen mas materias aprobadas que cursadas');
+	generarTexto(arc_maestro, arcTxt);
 end.
