@@ -1,0 +1,1 @@
+codigo: 20, nombre:20, descripcion: , stock disponible: 19, stock minimo: 20, precio: 20.00

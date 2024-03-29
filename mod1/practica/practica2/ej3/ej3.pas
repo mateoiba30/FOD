@@ -75,6 +75,23 @@ begin
     close(arc_maestro);
 end;
 
+procedure generarTexto(var arc_maestro: maestro; var arcTxt: Text);
+var
+	prod: producto;
+
+begin
+	reset(arc_maestro);
+	rewrite(arcTxt);
+
+	while not eof(arc_maestro) do begin
+		read(arc_maestro, prod);
+		if (prod.stockD < prod.stockM) then
+			writeln(arcTxt, 'codigo: ',prod.cod, ', nombre:', prod.nombre, ', descripcion: ', prod.des, ', stock disponible: ', prod.stockD, ', stock minimo: ', prod.stockM, ', precio: ', prod.precio:0:2); 
+	end;
+
+	close(arcTxt);
+	close(arc_maestro);
+end;
 
 var
     arcTxt : Text;
@@ -88,6 +105,7 @@ begin
 	Assign (arc_maestro,'maestro');
 	actualizarMaestro (arc_maestro,arr_detalles);
 
-    //Assign (arcTxt,'menosStock.txt');
-	//hacerTxt (arc_maestro,arcTxt);
+    assign (arcTxt,'menosStock.txt');
+	generarTexto (arc_maestro,arcTxt);
+    writeln('se ha generado el archivo con productos con menos stock del permitido');
 end.
