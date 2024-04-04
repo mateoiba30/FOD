@@ -72,6 +72,8 @@ begin
         writeln('');
     end;
 
+    close(arc_maestro); //no olvidar
+
 end;
 
 var
