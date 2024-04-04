@@ -122,11 +122,16 @@ var
     dato:cMaestro;
     localidades_sin_chapa:integer;
 begin
+    reset(arc_maestro);
     localidades_sin_chapa:=0;
     leerMaestro(arc_maestro, dato);
     while(dato.codP <> valorAlto) do begin
-
+        if(dato.vDeC = 0) then
+            localidades_sin_chapa+=1;
+        leerMaestro(arc_maestro, dato);
     end;
+    writeln('La cantidad de localidades sin chapa es: ', localidades_sin_chapa);
+    close(arc_maestro);
 end;
 
 var
