@@ -57,15 +57,18 @@ var
 
 begin
     //comparo cada registro de recs para buscar el mínimo
-    for i:=1 to n do
+    min_index:=0;
+    min.codP:=valorAlto;
+    for i:=1 to N do
         if(recs[i].codP <> valorAlto) then //si el elemento i en recs tiene valor alto, es porque hemos llegado al final del detalle i
-            if(recs[i].codP < min.codP) or ((recs[i].codP = min.codP) and (recs[i].codL < min.codL))then begin//si es de menor cod
+            if((recs[i].codP < min.codP) or ((recs[i].codP = min.codP) and (recs[i].codL < min.codL)))then begin//si es de menor cod
                 min := recs[i];
                 min_index:=i;
             end;
 
     if(min_index <> 0) then
-        leer(dets[min_index], recs[min_index]);
+        leer(dets[min_index], recs[min_index]); 
+    
     //si veo que el registro mínimo ahora es el de índice 5, entonces tengo que avanzar en la lectura del detalle 5, actualizar el registro dentro de Recs y devolver en min lo que encontré al inicio
 end;
 
@@ -74,10 +77,10 @@ var
     dato:cMaestro;
 begin
     leerMaestro(arc_maestro, dato);
-    while(dato.codP <> valorAlto) and (dato.codP <> min.codP) do //no se si es necesario asegurarme de encontrarlo
+    while( (dato.codP <> valorAlto) and ( (dato.codP <> min.codP) or (dato.codL <> min.codL) ))do //no se si es necesario asegurarme de encontrarlo
         leerMaestro(arc_maestro, dato);
     
-    if dato.codP = min.codP then begin
+    if dato.codP <> valorAlto then begin
         dato.vSinL-=min.vConL;
         dato.vSinG-=min.vConG;
         dato.vDeC-=min.vConst;
@@ -101,8 +104,8 @@ begin
         reset(dets[i]);
         leer(dets[i], recs[i]); 
     end;
-
     getRegistroMinimo(dets, recs, min); //buscamos el mínimo de todos los detalles para avanzar en el correcto orden y no tener que hacer corrimiento de datos en el maestro
+    
     while(min.codP <> valorAlto) do begin //para todos los detalles
         //La misma combinación de provincia y localidad aparecen a lo sumo una única vez
         actualizar(arc_maestro, min);
@@ -112,6 +115,18 @@ begin
     for i:=1 to n do
         close(dets[i]);
     close(arc_maestro);
+end;
+
+procedure informarSinChapa(var arc_maestro:maestro);
+var
+    dato:cMaestro;
+    localidades_sin_chapa:integer;
+begin
+    localidades_sin_chapa:=0;
+    leerMaestro(arc_maestro, dato);
+    while(dato.codP <> valorAlto) do begin
+
+    end;
 end;
 
 var
@@ -127,7 +142,6 @@ begin
         Str(i,str_aux);
         assign(dets[i], 'detalle'+str_aux);
     end;
-
 	actualizarMaestro (arc_maestro, dets);//no puedo informar acá porque solo paso por las localidades actualizadas
-    //informarSinChapa(arc_maestro);
+    informarSinChapa(arc_maestro);
 end.

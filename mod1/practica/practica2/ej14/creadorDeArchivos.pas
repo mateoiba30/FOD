@@ -154,14 +154,14 @@ begin
 	write (arc_maestro,c);
 	close (arc_maestro);}
 
-	crearMaestro(arc_maestro);
+	//crearMaestro(arc_maestro);
 	mostrarMaestro (arc_maestro);
 
 	for i:= 1 to n do begin
 		writeln ('DETALLE ',i,' : ');
 		Str (i,aString);
 		Assign (deta[i],'detalle'+ aString);
-		crearDetalle (deta[i]);
+		//crearDetalle (deta[i]);
 		mostrarDetalle (deta[i]);
 	end;
 end.
