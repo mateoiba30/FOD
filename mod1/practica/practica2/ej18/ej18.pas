@@ -155,7 +155,8 @@ begin
     end;
 
     getVivoMinimo(detaVIVO, regVIVO, minVIVO);//todos nacieron, pero no todos murieron, por eso recorro principalmente en los vivos
-    minMUERTO.nro:=-5;//para que la primera vez lea el primero muerto, pero las siguientes veces pueda no entrar al while. Si no pongo esto debería poner un getMuertoMinimo arriba del while, lo que haría que siempre por lo menos avance en 1 muerto (cosa que no hay que hacer si el anterior no murió)
+    //minMUERTO.nro:=-5;//para que la primera vez lea el primero muerto, pero las siguientes veces pueda no entrar al while. Si no pongo esto debería poner un getMuertoMinimo arriba del while, lo que haría que siempre por lo menos avance en 1 muerto (cosa que no hay que hacer si el anterior no murió)
+    getMuertoMinimo(detaMUERTO, regMUERTO, minMUERTO);//da los mismos resultados que hacer lo de arriba
     while(minVIVO.nro <> valorAlto) do begin
         //las personas no se repiten
         aux.datos:= minVIVO;
@@ -182,6 +183,51 @@ begin
         close(detaVIVO[i]);
         close(detaMUERTO[i]);
     end;
+end;
+
+//otra forma diferente de hacerlo
+procedure crearMaestro2 (var arc_maestro: maestro; var detaVIVO:arrayVIVO; var detaMUERTO: arrayMUERTO; var regVIVO: arrayRV; var regMUERTO: arrayRM);
+var
+minV: alive;
+minM: dead;
+m:cMaestro;
+i:integer;
+aString:string;
+begin
+	rewrite (arc_maestro);
+	for i:= 1 to n do begin 
+		Str (i,aString);
+		Assign (detaVIVO[i],'detalleVIVO'+aString);
+		reset (detaVIVO[i]);
+		leerVIVO (detaVIVO[i],regVIVO[i]);
+		Assign (detaMUERTO[i],'detalleMUERTO'+aString);
+		reset (detaMUERTO[i]);
+		leerMUERTO (detaMUERTO[i],regMUERTO[i]);
+	end;
+	getVivoMinimo (detaVIVO,regVIVO,minV);
+	getMuertoMinimo (detaMUERTO,regMUERTO,minM);
+	writeln (minV.nro,minM.nro);
+	while (minV.nro <> valorAlto) do begin
+		if (minV.nro = minM.nro) then begin
+			m.seMurio:= true;
+			m.enEfecto:= minM.datos;
+			getMuertoMinimo (detaMUERTO,regMUERTO,minM);
+		end
+		else begin
+			m.seMurio:= false;
+			m.enEfecto.matricula:='';
+			m.enEfecto.fecha:='';
+			m.enEfecto.hora:='';
+			m.enEfecto.lugar:='';
+		end;
+		m.datos:= minV;
+		write (arc_maestro,m);
+		getVivoMinimo (detaVIVO,regVIVO,minV);
+	end;
+	close (arc_maestro);
+	for i:= 1 to n do 
+		close (detaVIVO[i]);
+		close (detaMUERTO[i]);
 end;
 
 var
