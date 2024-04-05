@@ -138,8 +138,14 @@ var
     minMUERTO: dead;
     i: integer;
     aux: cMaestro;
+    noFallecido:fallecido;
 
 begin
+    noFallecido.matricula:='';
+    noFallecido.fecha:='';
+    noFallecido.hora:='';
+    noFallecido.lugar:='';
+
     rewrite(arc_maestro);
     for i:=1 to n do begin //posicionamos cada detalle al inicio
         reset(detaVIVO[i]);
@@ -149,22 +155,26 @@ begin
     end;
 
     getVivoMinimo(detaVIVO, regVIVO, minVIVO);//todos nacieron, pero no todos murieron, por eso recorro principalmente en los vivos
+    minMUERTO.nro:=-5;//para que la primera vez lea el primero muerto, pero las siguientes veces pueda no entrar al while. Si no pongo esto debería poner un getMuertoMinimo arriba del while, lo que haría que siempre por lo menos avance en 1 muerto (cosa que no hay que hacer si el anterior no murió)
     while(minVIVO.nro <> valorAlto) do begin
         //las personas no se repiten
         aux.datos:= minVIVO;
-        aux.seMurio:=false;
-        //veo si murio para completar más la info
-        getMuertoMinimo(detaMUERTO, regMUERTO, minMUERTO);
-        while(minMUERTO.nro < minVIVO.nro) do //si me paso puede ser porque no murió o por llegar al final con el valor alto
+        //veo si murio para completar más la informacion
+        while(minMUERTO.nro < minVIVO.nro) do begin//si me paso puede ser porque no murió o por llegar al final con el valor alto
             getMuertoMinimo(detaMUERTO, regMUERTO, minMUERTO);
-        
+        end;
+
         if(minMUERTO.nro = minVIVO.nro) then begin
             aux.seMurio:=true;
             aux.enEfecto :=minMUERTO.datos;
+        end
+        else begin
+            aux.seMurio:=false;
+            aux.enEfecto:=noFallecido;
         end;
-
-        seek(arc_maestro, filepos(arc_maestro)- 1);
+        //no hay que retroceder en el maestro porque el maestro estaba vacío
         write(arc_maestro, aux);
+        getVivoMinimo(detaVIVO, regVIVO, minVIVO); //no olvidar de avanzar
     end;
 
     close(arc_maestro);
