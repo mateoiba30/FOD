@@ -32,7 +32,7 @@ begin
 
     while not eof(a_completo) do begin
 
-        read(a_completo, e);
+        read(a_completo, e); //esto debería hacrelo al final
         if e.codigo = e_anterior.codigo then begin
             e_anterior.comision:=e_anterior.comision + e.comision;
         end
@@ -42,6 +42,15 @@ begin
         end;
 
     end;
+    {
+        //el recorrido de arriba es medio pelo, conviene hacerlo más o menos así (como lo hice en ejs anteriores):
+        leer()
+        while para todo el detalle
+            actualizo nro de empleado actual
+            while para cada empleado
+                reuno los datos para cuando repito el usuario
+                leer()
+    }
 
     write(a_compactado, e_anterior); // hay que escribir el empleado final
 
