@@ -292,8 +292,8 @@ begin
         readln(opcion);
 
         case opcion of
-            0:terminar := true;
-            1:crearArchivo(a1);
+            0: terminar := true;
+            1: crearArchivo(a1);
             2: agregarNovela(a1);
             3: modificarNovela(a1);
             4: eliminarNovela(a1);
