@@ -1,4 +1,6 @@
 codigo | duracion | genero | nombre | director | precio
-  0       0.00
-manuelita 321 terror manuelita albterto 432432.00
-fin 1 1 fin 1 1.00
+-4 2 2 2 2 2.00
+1 1 1 1 1 1.00
+5 5 5 5 5 5.00
+3 3 3 3 3 3.00
+0 4 4 4 4 4.00
