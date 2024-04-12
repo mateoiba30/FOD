@@ -219,6 +219,51 @@ begin
 	close(arcTxt);
 end;
 
+procedure modificarNovela(var a1: archivo_novelas);
+var
+    encontrado:boolean;
+    nov:novela;
+    cod:integer;
+
+begin
+    reset(a1);
+
+    write('Ingrese el codigo de la novela a modificar: ');
+    readln(cod);
+    leer(a1, nov);
+
+    encontrado:=false;
+    while ((nov.cod <> valorAlto) and (not encontrado)) do begin //el archivo puede no estar ordenado
+        if(nov.cod = cod) then begin
+            encontrado:= true;
+            writeln('Ingrese los nuevos datos de la novela');
+            write('Ingrese la duracion de la novela: ');
+            readln(nov.duracion);
+            write('Ingrese el genero de la novela: ');
+            readln(nov.genero);
+            write('Ingrese el nombre de la novela: ');
+            readln(nov.nombre);
+            write('Ingrese el director de la novela: ');
+            readln(nov.director);
+            write('Ingrese el precio de la novela: ');
+            readln(nov.precio);
+
+            seek(a1, filePos(a1)-1);
+            write(a1, nov);
+        end
+        else begin
+            leer(a1, nov);
+        end;
+    end;
+
+    if(encontrado) then
+        writeln('Novela modificada')
+    else
+        writeln('Novela no modificada, no se encontro el codigo');
+
+    close(a1);
+end;
+
 var
     a1: archivo_novelas;
     nombre_fisico:string;
@@ -250,7 +295,7 @@ begin
             0:terminar := true;
             1:crearArchivo(a1);
             2: agregarNovela(a1);
-
+            3: modificarNovela(a1);
             4: eliminarNovela(a1);
             5: exportarVisualmenteNovelas(a1, arcTxt);
             6: exportarTecnicamenteNovelas(a1, arcTxt); //si no paso el txt como parametro entonces no se guardan los cambios
