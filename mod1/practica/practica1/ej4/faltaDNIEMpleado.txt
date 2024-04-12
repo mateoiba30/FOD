@@ -1,2 +1,0 @@
-nombre, apellido, DNI, edad, numero
-camilo,shumager,00,12,21

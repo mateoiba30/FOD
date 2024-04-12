@@ -1,0 +1,4 @@
+nombre, apellido, DNI, edad, numero
+mateo,ibanez,45377135,19,1
+facundo,silva,44654654,20,10
+santino,radice,43543345,22,3
