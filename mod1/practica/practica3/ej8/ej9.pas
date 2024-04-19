@@ -108,7 +108,7 @@ begin
     leerArc(arc_log, l);//paso la cabecera
     leerArc(arc_log, l);
     while(l.nom<>valorAlto) and not(encontre) do begin
-        if(l.nom = nom) and (l.cant > 0) then //la cantidad debe ser mayor a cero porque puede ser un borrado logico
+        if(l.nom = nom) and (l.cant > 0) then //la cantidad debe ser mayor a cero porque puede ser un borrado
             encontre:=true
         else
             leerArc(arc_log, l);

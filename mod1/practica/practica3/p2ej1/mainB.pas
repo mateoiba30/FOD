@@ -1,4 +1,4 @@
-program ejer3;
+program mainB;
 uses crt;
 
 CONST
@@ -25,7 +25,7 @@ maestro = file of producto;
 detalle_diario = file of venta;
 detalles = array [1..n] of detalle_diario;
 
-procedure leer (var arc_detalle: detalle_diario; var dato:venta);
+procedure leerDetalle (var arc_detalle: detalle_diario; var dato:venta);
 begin
 	if not eof (arc_detalle) then
 		read (arc_detalle,dato)
@@ -33,40 +33,50 @@ begin
 		dato.cod:= valorAlto;
 end;
 
-procedure actualizar(var arc_maestro: maestro; var arc_detalle: detalle_diario);
+procedure leerMaestro (var arc: maestro; var dato:producto);
+begin
+	if not eof (arc) then
+		read (arc,dato)
+	else
+		dato.cod:= valorAlto;
+end;
+
+procedure actualizar(var arc_maestro: maestro; var arc_detalle: detalle_diario); //ahora los datos no están ordenados
 var
-    dato, aux: venta;
+    dato: venta;
     prod: producto;
+    encontre:boolean;
 begin
     reset(arc_detalle);
 
-    leer(arc_detalle, dato);
+    leerDetalle(arc_detalle, dato);
     while(dato.cod <> valorAlto) do begin
-        aux.cod := dato.cod;
-        aux.cantidadVendida := 0; //arranco en 0 porque el siguiente while lee al final
-        while(aux.cod = dato.cod) do begin
-            aux.cantidadVendida := aux.cantidadVendida + dato.cantidadVendida;
-            leer(arc_detalle, dato);
+        //debo acceder ya al maestro, no se si habrá otro dato con el mismo cod
+        encontre:=false;
+        leerMaestro(arc_maestro, prod);
+        while ( (prod.cod<>valorAlto) and not(encontre)) do begin
+            if(prod.cod = dato.cod) then begin
+                encontre:=true;
+                seek(arc_maestro, filepos(arc_maestro) -1 );
+                prod.stockD := prod.stockD - dato.cantidadVendida;
+                write(arc_maestro, prod);
+                seek(arc_maestro, 0);//debo buscar desde el inicio la proxima
+            end
+            else begin
+                leerMaestro(arc_maestro, prod);
+            end;
         end;
-
-        if not eof(arc_maestro) then
-            read(arc_maestro, prod);
-        while ( ( not eof(arc_maestro)) and (prod.cod < aux.cod)) do 
-            read(arc_maestro, prod);
-        seek(arc_maestro, filepos(arc_maestro) -1 );
-        prod.stockD := prod.stockD - aux.cantidadVendida;
-        write(arc_maestro, prod);
+        leerDetalle(arc_detalle, dato);
     end;
-
     close(arc_detalle);
 end;
 
-procedure actualizarMaestro (var arc_maestro: maestro; var arr_detalles: detalles);//DEBERÍA HABER AVANZADO CON TODOS LOS DETALLES A LA VEZ, ESTÁ MAL!
+procedure actualizarMaestro (var arc_maestro: maestro; var arr_detalles: detalles);
 var
     i: integer;
 
 begin
-    reset(arc_maestro);
+    reset(arc_maestro);//como no hay orden, puedo recorrer de a un detalle a la vez
     for i:= 1 to n do begin
         seek(arc_maestro, 0); //vuelvo al origen
         actualizar(arc_maestro, arr_detalles[i]);
