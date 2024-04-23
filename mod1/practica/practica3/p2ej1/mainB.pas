@@ -47,6 +47,8 @@ var
     prod: producto;
     encontre:boolean;
 begin
+    //para el inciso A puedo recorrer el maestro, y busco dentro del detalle hasta encontrar una vez el código, ya que solo se modifica una vez y esto sería más eficiente -> en general tratar de recorrer por el maestro y luego por el detalle
+    //en el caso del B NO debería recorrer el maestro y para cada cod recorrer todo el detalle. Debería recorrer todo el detalle y para cada cod recorrer el maestro hasta encontrar el dato
     reset(arc_detalle);
 
     leerDetalle(arc_detalle, dato);

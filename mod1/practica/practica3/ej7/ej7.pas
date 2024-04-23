@@ -119,17 +119,24 @@ begin
             pos:= (filePos(arc_log)-1);           
             seek(arc_log, fileSize(arc_log)-1); // Me paro al inicio del último registro
             read(arc_log, a); // Leo el último registro, seguro no estoy en EOF
-            while(a.nom='eliminado') do begin // Mientras el último esté eliminado
+            while(a.nom='eliminado') and (filePos(arc_log) > pos) do begin // Mientras el último esté eliminado y no me pase del archivo que quiero sobreescribir
                 seek(arc_log, fileSize(arc_log)-1); // Me paro al inicio del anteúltimo registro
                 truncate(arc_log);
+                if(filePos(arc_log) = pos) then // Si me pasé del archivo, no tengo más registros para sobreescribir y debo truncar en pos
+                    break;
                 seek(arc_log, fileSize(arc_log)-1); // Tal vez el archivo no tenga más elementos
                 read(arc_log, a); // Fui para atrás, seguro no estoy en el EOF
             end;
-            seek(arc_log, pos);
-            write(arc_log, a);//sobreescribo el borrado con el ultimo no borrado
-            seek(arc_log, fileSize(arc_log)-1);//USAMOS FILESIZE, NO FILEPOS. Queremos ir al final del archivo
-            truncate(arc_log); 
-            seek(arc_log,pos);
+            if (filePos(arc_log) = pos) then begin // Si me pasé del archivo, no tengo más registros para sobreescribir y debo truncar en pos
+                truncate(arc_log);
+            end
+            else begin
+                seek(arc_log, pos);
+                write(arc_log, a);//sobreescribo el borrado con el ultimo no borrado
+                seek(arc_log, fileSize(arc_log)-1);//USAMOS FILESIZE, NO FILEPOS. Queremos ir al final del archivo
+                truncate(arc_log); 
+                seek(arc_log,pos);
+            end;
         end;
         leerArc(arc_log, a);
     end;

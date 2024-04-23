@@ -65,6 +65,6 @@ var
 arc_maestro:maestro;
 begin
 	Assign (arc_maestro,'maestro');
-	crear (arc_maestro);
+	//crear (arc_maestro);
 	mostrarMaestro (arc_maestro);
 end.
