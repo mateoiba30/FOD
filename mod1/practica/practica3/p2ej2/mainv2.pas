@@ -46,7 +46,7 @@ begin //creo que en la version anterior interpreté mal la consigna. Ahora recor
     leer(arc_maestro, dato);
     while (dato.codP <> valorAlto) do begin //para el archivo
         //actualizar el archivo auxiliar que acumula los votos por localidad
-        vot_tot+=dato.cantV;
+        vot_tot:=vot_tot + dato.cantV;
         
         yaProcesado:=false;
         seek(arc_contador, 0);//siempre buscar desde el inicio porque no hay orden en el maestro
@@ -72,12 +72,11 @@ begin //creo que en la version anterior interpreté mal la consigna. Ahora recor
                 if(dato.codL = codLActual) then begin
                     vot_loc+=dato.cantV;
                     writeln('Vot_loc: ', vot_loc, ' dato catV: ', dato.cantV); //para debuguear
-                end
-                else begin
-                    leer(arc_maestro, dato); //no quiero leer algo incorrecto porque desp debo imprimir la localidad
+                    //break;
                 end;
+                leer(arc_maestro, dato); //no quiero leer algo incorrecto porque desp debo imprimir la localidad
             end;
-            writeln(dato.codL, '   ', vot_loc);
+            writeln(codLActual, '   ', vot_loc);
             seek(arc_maestro, pos);
             vot_loc:=0;
         end;
@@ -90,6 +89,29 @@ begin //creo que en la version anterior interpreté mal la consigna. Ahora recor
     writeln('Total general de votos: ', vot_tot);
 end;
 
+procedure imprimirCl(c:cMaestro);
+begin
+	with c do begin
+		writeln ('CODIGO PROVINCIA: ',codP);
+		writeln ('CODIGO LOCALIDAD: ',codL);
+		writeln ('NUMERO MESA: ',nro);
+		writeln ('CANTIDAD VOTOS: ',cantV);
+		writeln ('');
+	end;
+end;
+
+procedure mostrarMaestro (var arc_maestro:maestro);
+var
+c:cMaestro;
+begin
+	reset (arc_maestro);
+	while not eof (arc_maestro) do begin
+		read (arc_maestro,c);
+		imprimirCl(c);
+	end;
+	close (arc_maestro);
+end;
+
 var
 arc_maestro:maestro;
 arc_contador:contador;
@@ -97,5 +119,6 @@ arc_contador:contador;
 begin
 	Assign (arc_maestro,'maestro');
     assign(arc_contador, 'contador');
+    //mostrarMaestro (arc_maestro);
 	listado (arc_maestro, arc_contador);
 end.
